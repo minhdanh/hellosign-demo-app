@@ -16,6 +16,8 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'hellosign.views.index')
+    url(r'^$', 'hellosign.views.index'),
+    url(r'^embedded_signing', views.embedded_signing, name='embedded_signing'),
+
 )
 urlpatterns += staticfiles_urlpatterns()

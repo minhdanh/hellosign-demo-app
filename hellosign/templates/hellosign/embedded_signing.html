@@ -1,0 +1,158 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Embedded Signing Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'bootstrap.css' %}" media="screen">
+    <link rel="stylesheet" href="{% static 'bootswatch.css' %}">
+    <link href="{% static 'favicon.ico' %}" rel="shortcut icon" type="image/vnd.microsoft.icon">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../bower_components/html5shiv/dist/html5shiv.js"></script>
+      <script src="../bower_components/respond/dest/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="/" class="navbar-brand"><img alt="HelloSign" src="{%static 'logo.png' %}"></a>
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Themes <span class="caret"></span></a>
+              <ul class="dropdown-menu" aria-labelledby="themes">
+                <li><a href="../default/">Default</a></li>
+                <li class="divider"></li>
+                <li><a href="../amelia/">Amelia</a></li>
+                <li><a href="../cerulean/">Cerulean</a></li>
+                <li><a href="../cosmo/">Cosmo</a></li>
+                <li><a href="../cyborg/">Cyborg</a></li>
+                <li><a href="../darkly/">Darkly</a></li>
+                <li><a href="../flatly/">Flatly</a></li>
+                <li><a href="../journal/">Journal</a></li>
+                <li><a href="../lumen/">Lumen</a></li>
+                <li><a href="../readable/">Readable</a></li>
+                <li><a href="../simplex/">Simplex</a></li>
+                <li><a href="../slate/">Slate</a></li>
+                <li><a href="../spacelab/">Spacelab</a></li>
+                <li><a href="../superhero/">Superhero</a></li>
+                <li><a href="../united/">United</a></li>
+                <li><a href="../yeti/">Yeti</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="../help/">Help</a>
+            </li>
+            <li>
+              <a href="http://news.bootswatch.com">Blog</a>
+            </li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="download">Download <span class="caret"></span></a>
+              <ul class="dropdown-menu" aria-labelledby="download">
+                <li><a href="./bootstrap.min.css">bootstrap.min.css</a></li>
+                <li><a href="./bootstrap.css">bootstrap.css</a></li>
+                <li class="divider"></li>
+                <li><a href="./variables.less">variables.less</a></li>
+                <li><a href="./bootswatch.less">bootswatch.less</a></li>
+              </ul>
+            </li>
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="http://builtwithbootstrap.com/" target="_blank">Built With Bootstrap</a></li>
+            <li><a href="https://wrapbootstrap.com/?ref=bsw" target="_blank">WrapBootstrap</a></li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="bs-docs-section">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="page-header">
+              <h1 id="type">Embedded Signing Demo</h1>
+            </div>
+          </div>
+        </div>
+
+        <!-- Headings -->
+
+        <div class="row">
+          <div class="col-lg-12">
+            <p>This page demonstrates how you can add an embedded signature request to your Java-based web application.</p>
+            <h2>Before You Begin</h2>
+            <div class="well">
+              <ol>
+                <li>Obtain an API key.<br>Sign up for an API plan <a href="https://www.hellosign.com/api/pricing">here</a>. Adding embedded signing to your website requires a Silver or Gold API plan. However, you can test the functionality for free by creating signature requests in test mode.</li>
+                <li>Obtain a Client ID.<br>Sign up for a Client ID for your application <a href="https://www.hellosign.com/oauth/createAppForm">here</a>.</li>
+                <li>Set the API key and Client ID in the properties file:
+                  <pre>jello-sign/src/main/webapp/WEB-INF/web.properties</pre>
+                </li>
+              </ol>
+            </div>
+            <h2>Try It Out</h2>
+            <p>Please sign our NDA.</p>
+            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+            <div class="col-lg-8">
+              <form class="form-horizontal" action="{% url 'embedded_signing' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <div class="col-lg-6">
+                    <input class="form-control" type="text" name="name" placeholder="Your name">
+                  </div>
+                  <div class="col-lg-6">
+                    <input class="form-control" type="text" name="email" placeholder="Your email">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-lg-6">
+                    <button type="submit" class="btn btn-primary btn-sm">Launch Demo</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <footer>
+          <div class="row">
+            <div class="col-lg-12">
+
+              <ul class="list-unstyled">
+                <li class="pull-right"><a href="#top">Back to top</a></li>
+                <li><a href="http://feeds.feedburner.com/bootswatch">RSS</a></li>
+                <li><a href="https://twitter.com/thomashpark">Twitter</a></li>
+                <li><a href="https://github.com/thomaspark/bootswatch/">GitHub</a></li>
+                <li><a href="../help/#api">API</a></li>
+              </ul>
+              <p>Based on <a href="http://getbootstrap.com" rel="nofollow">Bootstrap</a>. Icons from <a href="http://fortawesome.github.io/Font-Awesome/" rel="nofollow">Font Awesome</a>. Web fonts from <a href="http://www.google.com/webfonts" rel="nofollow">Google</a>.</p>
+
+            </div>
+          </div>
+
+        </footer>
+
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="{% static 'bootstrap.min.js' %}"></script>
+    <script src="{% static 'bootswatch.js' %}"></script>
+  </body>
+</html>
+
+
