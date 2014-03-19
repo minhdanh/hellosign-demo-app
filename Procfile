@@ -1,1 +1,1 @@
-web: gunicorn hellosign:app
+web: gunicorn django_site.wsgi
