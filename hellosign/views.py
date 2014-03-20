@@ -71,7 +71,7 @@ def embedded_requesting(request):
             # pdb.set_trace()
 
             sr = hsclient.create_unclaimed_draft(
-                "1", files, [], "request_signature",
+                "1", CLIENT_ID, files, [], "request_signature",
                 "The NDA we talked about", "Please sign this NDA and then we" +
                 " can discuss more. Let me know if you have any questions.",
                 signers, cc_email_addresses)
