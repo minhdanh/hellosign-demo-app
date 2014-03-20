@@ -4,8 +4,11 @@ from django.http import HttpResponseRedirect, HttpResponse
 from hellosign_python_sdk.hsclient import HSClient
 from hellosign_python_sdk.utils.exception import NoAuthMethod
 from settings import API_KEY, CLIENT_ID
+from .forms import UploadFileForm
 import os
 import pdb
+import tempfile
+import shutil
 
 def index(request):
     return render_to_response('hellosign/index.html',
@@ -50,19 +53,29 @@ def embedded_signing(request):
 def embedded_requesting(request):
     if request.method == 'POST':
         try:
-            user_email = request.POST['email']
-            user_name = request.POST['name']
+            user_email = request.POST['user_email']
+            user_name = request.POST['user_name']
+            signer_name = request.POST['signer_name']
+            signer_email = request.POST['signer_email']
+            subject = request.POST['subject']
+            message = request.POST['message']
             hsclient = HSClient(api_key=API_KEY)
 
-            files = [os.path.dirname(os.path.realpath(__file__)) + "/docs/nda.pdf"]
-            signers = [{"name": user_name, "email_address": user_email}]
+            files = []
+            form = UploadFileForm(request.POST, request.FILES)
+            if form.is_valid():
+                files.append(handle_uploaded_file(request.FILES['upload_file']))
+            # files = [file_name]
+            signers = [{"name": user_name, "email_address": user_email}, {"name": signer_name, "email_address": signer_email}]
             cc_email_addresses = []
-            sr = hsclient.send_signature_request_embedded(
-                "1", CLIENT_ID, files, [], "NDA with Acme Co.",
+            # pdb.set_trace()
+
+            sr = hsclient.create_unclaimed_draft(
+                "1", files, [], "request_signature",
                 "The NDA we talked about", "Please sign this NDA and then we" +
                 " can discuss more. Let me know if you have any questions.",
-                "", signers, cc_email_addresses)
-            embedded = hsclient.get_embeded_object(sr.signatures[0]["signature_id"])
+                signers, cc_email_addresses)
+            sign_url = sr.claim_url
         except KeyError:
             return render(request, 'hellosign/embedded_requesting.html', {
                 'error_message': "Please enter both your name and email.",
@@ -73,12 +86,16 @@ def embedded_requesting(request):
                 "value for API_KEY.",
             })
         else:
-            # pdb.set_trace()
-            # return HttpResponseRedirect('embedded_requesting?signed=true&sign_url=' + str(embedded.sign_url))
             return render(request, 'hellosign/embedded_requesting.html', {
                     'client_id': CLIENT_ID,
-                    'sign_url': str(embedded.sign_url)
+                    'sign_url': str(sign_url)
                     })
     else:
         return render_to_response('hellosign/embedded_requesting.html',
             context_instance=RequestContext(request))
+
+def handle_uploaded_file(source):
+    fd, filepath = tempfile.mkstemp(prefix=source.name, dir='/tmp/')
+    with open(filepath, 'wb') as dest:
+        shutil.copyfileobj(source, dest)
+    return filepath

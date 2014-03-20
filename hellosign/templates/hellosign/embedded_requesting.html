@@ -112,45 +112,45 @@
             </div>
             {% endif %}
             <div class="well col-lg-8">
-              <form class="form-horizontal" action="{% url 'embedded_requesting' %}" method="post">
+              <form class="form-horizontal" action="{% url 'embedded_requesting' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <fieldset>
                   <div class="form-group">
                     <label for="inputEmail" class="col-lg-2 control-label">Select a file</label>
                     <div class="col-lg-10">
-                      <input type="file" class="btn btn-default btn-sm">
+                      <input type="file" class="btn btn-default btn-sm" name="upload_file">
                       <p class="help-block">What needs to be signed?</p>
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="inputPassword" class="col-lg-2 control-label">Who are you?</label>
+                    <label class="col-lg-2 control-label">Who are you?</label>
                     <div class="col-lg-5">
-                      <input class="form-control" type="text" name="name" placeholder="Your name">
+                      <input class="form-control" type="text" name="user_name" placeholder="Your name">
                     </div>
                     <div class="col-lg-5">
-                      <input class="form-control" type="text" name="email" placeholder="Your email">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputPassword" class="col-lg-2 control-label">Signer</label>
-                    <div class="col-lg-5">
-                      <input class="form-control" type="text" name="name" placeholder="Your name">
-                    </div>
-                    <div class="col-lg-5">
-                      <input class="form-control" type="text" name="email" placeholder="Your email">
+                      <input class="form-control" type="text" name="user_email" placeholder="Your email">
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="inputPassword" class="col-lg-2 control-label">Subject</label>
+                    <label class="col-lg-2 control-label">Signer</label>
+                    <div class="col-lg-5">
+                      <input class="form-control" type="text" name="signer_name" placeholder="Signer name">
+                    </div>
+                    <div class="col-lg-5">
+                      <input class="form-control" type="text" name="signer_email" placeholder="Signer email">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label">Subject</label>
                     <div class="col-lg-10">
-                      <input type="password" class="form-control" id="inputPassword" placeholder="Subject (optional)">
+                      <input type="text" class="form-control" name="subject" placeholder="Subject (optional)">
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="textArea" class="col-lg-2 control-label">Message</label>
+                    <label class="col-lg-2 control-label">Message</label>
                     <div class="col-lg-10">
-                      <textarea class="form-control" rows="3" id="textArea"></textarea>
+                      <textarea class="form-control" name="message" rows="3"></textarea>
                       <span class="help-block">Optional</span>
                     </div>
                   </div>
