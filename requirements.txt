@@ -1,5 +1,5 @@
 Django==1.6.2
 gunicorn==18.0
-hellosign-python-sdk==0.1.8
+hellosign-python-sdk==0.2.2
 requests==2.2.1
 wsgiref==0.1.2
