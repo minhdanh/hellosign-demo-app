@@ -12,6 +12,8 @@ import shutil
 import json
 import re
 from querystring_parser import parser
+#debug on heroku
+import logging
 
 
 def index(request):
@@ -100,6 +102,7 @@ def embedded_requesting(request):
             context_instance=RequestContext(request))
 
 def embedded_template_requesting(request):
+    logger = logging.getLogger(__file__)
     try:
         hsclient = HSClient(api_key=API_KEY)
     except NoAuthMethod:
@@ -130,6 +133,8 @@ def embedded_template_requesting(request):
                 " can discuss more. Let me know if you have any questions.",
                 signing_redirect_url = "", signers = signers, ccs = ccs, custom_fields = custom_fields)
             # print sr.signatures[0]["signature_id"]
+            logger.warn(sr.signatures[0]["signature_id"])
+            logger.warn(sr)
             embedded = hsclient.get_embeded_object(sr.signatures[0]["signature_id"])
 
         # except KeyError:
@@ -147,7 +152,7 @@ def embedded_template_requesting(request):
         rf_list = hsclient.get_reusable_form_list()
         templates = "[";
         for rf in rf_list:
-            print json.dumps(rf.json_data)
+            # print json.dumps(rf.json_data)
             templates = templates + json.dumps(rf.json_data) + ", "
         templates = templates + "]"
         return render(request, 'hellosign/embedded_template_requesting.html', {
