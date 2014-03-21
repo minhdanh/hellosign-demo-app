@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^$', 'hellosign.views.index'),
     url(r'^embedded_signing', views.embedded_signing, name='embedded_signing'),
     url(r'^embedded_requesting', views.embedded_requesting, name='embedded_requesting'),
+    url(r'^embedded_template_requesting', views.embedded_template_requesting, name='embedded_template_requesting'),
 
 )
 urlpatterns += staticfiles_urlpatterns()
