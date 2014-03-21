@@ -66,20 +66,20 @@ def embedded_requesting(request):
             if form.is_valid():
                 files.append(handle_uploaded_file(request.FILES['upload_file']))
             # files = [file_name]
-            signers = [{"name": user_name, "email_address": user_email}, {"name": signer_name, "email_address": signer_email}]
+            signers = [{"name": signer_name, "email_address": signer_email}]
             cc_email_addresses = []
             # pdb.set_trace()
 
             sr = hsclient.create_unclaimed_draft(
-                "1", CLIENT_ID, files, [], "request_signature",
+                "1", CLIENT_ID, '1', user_email, files, [], "request_signature",
                 "The NDA we talked about", "Please sign this NDA and then we" +
                 " can discuss more. Let me know if you have any questions.",
                 signers, cc_email_addresses)
             sign_url = sr.claim_url
-        except KeyError:
-            return render(request, 'hellosign/embedded_requesting.html', {
-                'error_message': "Please enter both your name and email.",
-            })
+        # except KeyError:
+        #     return render(request, 'hellosign/embedded_requesting.html', {
+        #         'error_message': "Please enter both your name and email.",
+        #     })
         except NoAuthMethod:
             return render(request, 'hellosign/embedded_requesting.html', {
                 'error_message': "Please update your settings to include a " +
