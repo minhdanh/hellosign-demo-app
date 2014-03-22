@@ -130,10 +130,8 @@ def embedded_template_requesting(request):
                 subject = "The NDA we talked about", message = "Please sign this NDA and then we" +
                 " can discuss more. Let me know if you have any questions.",
                 signing_redirect_url = "", signers = signers, ccs = ccs, custom_fields = custom_fields)
-            # print sr.signatures[0]["signature_id"]
-            # sys.stdout.flush()
             embedded = hsclient.get_embeded_object(sr.signatures[0]["signature_id"])
-
+        # TODO: need some more validations here
         # except KeyError:
         #     return render(request, 'hellosign/embedded_template_requesting.html', {
         #         'error_message': "Please enter both your name and email.",
