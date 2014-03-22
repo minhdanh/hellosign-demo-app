@@ -12,8 +12,7 @@ import shutil
 import json
 import re
 from querystring_parser import parser
-#debug on heroku
-import logging
+import sys
 
 
 def index(request):
@@ -102,7 +101,6 @@ def embedded_requesting(request):
             context_instance=RequestContext(request))
 
 def embedded_template_requesting(request):
-    logger = logging.getLogger(__file__)
     try:
         hsclient = HSClient(api_key=API_KEY)
     except NoAuthMethod:
@@ -132,9 +130,8 @@ def embedded_template_requesting(request):
                 subject = "The NDA we talked about", message = "Please sign this NDA and then we" +
                 " can discuss more. Let me know if you have any questions.",
                 signing_redirect_url = "", signers = signers, ccs = ccs, custom_fields = custom_fields)
-            # print sr.signatures[0]["signature_id"]
-            logger.warn(sr.signatures[0]["signature_id"])
-            logger.warn(sr)
+            print sr.signatures[0]["signature_id"]
+            sys.stdout.flush()
             embedded = hsclient.get_embeded_object(sr.signatures[0]["signature_id"])
 
         # except KeyError:
