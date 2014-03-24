@@ -117,7 +117,7 @@
             </div>
             <p>This demo will prompt you for authorization to send a signature request to someone on your behalf. Enter their email address and an optional name below and click "Launch Demo."</p>
             <div class="col-lg-8">
-              <form class="form-horizontal" action="{% url 'embedded_signing' %}" method="post">
+              <form class="form-horizontal" action="{% url 'oauth' %}" method="post">
                 {% csrf_token %}
               <div class="form-group">
                 <div class="col-lg-6">

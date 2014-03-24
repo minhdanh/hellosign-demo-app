@@ -158,43 +158,36 @@ def embedded_template_requesting(request):
 def oauth(request):
     if request.method == 'POST':
         try:
-            user_email = request.POST['user_email']
-            user_name = request.POST['user_name']
-            signer_name = request.POST['signer_name']
-            signer_email = request.POST['signer_email']
-            subject = request.POST['subject']
-            message = request.POST['message']
-            hsclient = HSClient(api_key=API_KEY)
+            user_email = request.POST['email']
+            user_name = request.POST['name']
 
-            files = []
-            form = UploadFileForm(request.POST, request.FILES)
-            if form.is_valid():
-                files.append(handle_uploaded_file(request.FILES['upload_file']))
-            # files = [file_name]
-            signers = [{"name": signer_name, "email_address": signer_email}]
+            oauth = request.session['oauth']
+            user_hsclient = HSClient(api_accesstoken=oauth.access_token, api_accesstokentype=oauth.access_token_type)
+
+            files = [os.path.dirname(os.path.realpath(__file__)) + "/docs/nda.pdf"]
+            signers = [{"name": user_name, "email_address": user_email}]
             cc_email_addresses = []
-            # pdb.set_trace()
-
-            sr = hsclient.create_unclaimed_draft(
-                "1", CLIENT_ID, '1', user_email, files, [], "request_signature",
+            sr = user_hsclient.send_signature_request_embedded(
+                "1", CLIENT_ID, files, [], "NDA with Acme Co.",
                 "The NDA we talked about", "Please sign this NDA and then we" +
                 " can discuss more. Let me know if you have any questions.",
-                signers, cc_email_addresses)
-            sign_url = sr.claim_url
-        # except KeyError:
-        #     return render(request, 'hellosign/embedded_requesting.html', {
-        #         'error_message': "Please enter both your name and email.",
-        #     })
-
+                "", signers, cc_email_addresses)
+            embedded = user_hsclient.get_embeded_object(sr.signatures[0]["signature_id"])
+        except KeyError:
+            return render(request, 'hellosign/embedded_signing.html', {
+                'error_message': "Please enter both your name and email.",
+            })
         except NoAuthMethod:
-            return render(request, 'hellosign/oauth.html', {
+            return render(request, 'hellosign/embedded_signing.html', {
                 'error_message': "Please update your settings to include a " +
                 "value for API_KEY.",
             })
         else:
-            return render(request, 'hellosign/oauth.html', {
+            # pdb.set_trace()
+            # return HttpResponseRedirect('embedded_signing?signed=true&sign_url=' + str(embedded.sign_url))
+            return render(request, 'hellosign/embedded_signing.html', {
                     'client_id': CLIENT_ID,
-                    'sign_url': str(sign_url)
+                    'sign_url': str(embedded.sign_url)
                     })
     else:
         try:

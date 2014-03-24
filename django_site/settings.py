@@ -133,8 +133,8 @@ INSTALLED_APPS = (
     # 'debug_toolbar'
 )
 
-# SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
-SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
+# SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
