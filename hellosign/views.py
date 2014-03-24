@@ -208,7 +208,7 @@ def oauth_callback(request):
         hsclient = HSClient(api_key=API_KEY)
         oauth = hsclient.get_oauth_data(code, CLIENT_ID, SECRET, state)
         request.session['oauth_accesstoken'] = oauth.access_token
-        request.session['oauth_token_type'] = oauth.token_type
+        request.session['oauth_token_type'] = oauth.access_token_type
     except KeyError:
         return render(request, 'hellosign/oauth_callback.html', {
                 'error_message': "No code or state found",
