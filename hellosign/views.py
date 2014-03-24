@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from hellosign_python_sdk.hsclient import HSClient
 from hellosign_python_sdk.utils.exception import NoAuthMethod
-from settings import API_KEY, CLIENT_ID
+from settings import API_KEY, CLIENT_ID, SECRET
 from .forms import UploadFileForm
 import os
 import pdb
@@ -153,6 +153,73 @@ def embedded_template_requesting(request):
         return render(request, 'hellosign/embedded_template_requesting.html', {
                     'templates': templates
                     })
+
+
+def oauth(request):
+    if request.method == 'POST':
+        try:
+            user_email = request.POST['user_email']
+            user_name = request.POST['user_name']
+            signer_name = request.POST['signer_name']
+            signer_email = request.POST['signer_email']
+            subject = request.POST['subject']
+            message = request.POST['message']
+            hsclient = HSClient(api_key=API_KEY)
+
+            files = []
+            form = UploadFileForm(request.POST, request.FILES)
+            if form.is_valid():
+                files.append(handle_uploaded_file(request.FILES['upload_file']))
+            # files = [file_name]
+            signers = [{"name": signer_name, "email_address": signer_email}]
+            cc_email_addresses = []
+            # pdb.set_trace()
+
+            sr = hsclient.create_unclaimed_draft(
+                "1", CLIENT_ID, '1', user_email, files, [], "request_signature",
+                "The NDA we talked about", "Please sign this NDA and then we" +
+                " can discuss more. Let me know if you have any questions.",
+                signers, cc_email_addresses)
+            sign_url = sr.claim_url
+        # except KeyError:
+        #     return render(request, 'hellosign/embedded_requesting.html', {
+        #         'error_message': "Please enter both your name and email.",
+        #     })
+
+        except NoAuthMethod:
+            return render(request, 'hellosign/oauth.html', {
+                'error_message': "Please update your settings to include a " +
+                "value for API_KEY.",
+            })
+        else:
+            return render(request, 'hellosign/oauth.html', {
+                    'client_id': CLIENT_ID,
+                    'sign_url': str(sign_url)
+                    })
+    else:
+        try:
+            oauth = request.session['oauth']
+        except KeyError:
+            oauth = request.session['oauth'] = None
+        return render(request, 'hellosign/oauth.html', {
+                'oauth': oauth,
+                'client_id': CLIENT_ID
+            })
+
+def oauth_callback(request):
+    try:
+        code = request.GET['code']
+        state = request.GET['state']
+        oauth = hsclient.get_oauth_data(code, CLIENT_ID, SECRET, state)
+        request.session['oauth'] = oauth
+    except KeyError:
+        return render(request, 'hellosign/embedded_signing.html', {
+                'error_message': "No code or state found",
+            })
+
+    return render_to_response('hellosign/oauth_callback.html',
+            context_instance=RequestContext(request))
+
 
 def handle_uploaded_file(source):
     fd, filepath = tempfile.mkstemp(prefix=source.name, dir='/tmp/')
