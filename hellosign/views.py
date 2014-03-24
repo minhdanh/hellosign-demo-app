@@ -167,7 +167,7 @@ def oauth(request):
             signers = [{"name": user_name, "email_address": user_email}]
             cc_email_addresses = []
             sr = user_hsclient.send_signature_request_embedded(
-                "1", CLIENT_ID, files, [], "NDA with Acme Co.",
+                "1", CLIENT_ID, files, [], "OAuth Demo - NDA",
                 "The NDA we talked about", "Please sign this NDA and then we" +
                 " can discuss more. Let me know if you have any questions.",
                 "", signers, cc_email_addresses)
