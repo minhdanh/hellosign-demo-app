@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from hellosign_python_sdk.hsclient import HSClient
-from hellosign_python_sdk.utils.exception import NoAuthMethod
+from hellosign_python_sdk.utils.exception import NoAuthMethod, BadRequest
 from settings import API_KEY, CLIENT_ID, SECRET
 from .forms import UploadFileForm
 import os
@@ -217,7 +217,11 @@ def oauth_callback(request):
         return render(request, 'hellosign/oauth_callback.html', {
                 'error_message': "No code or state found",
             })
-
+    except BadRequest, e:
+        # pdb.set_trace()
+        return render(request, 'hellosign/oauth_callback.html', {
+                'error_message': str(e),
+            })
     return render_to_response('hellosign/oauth_callback.html',
             context_instance=RequestContext(request))
 
