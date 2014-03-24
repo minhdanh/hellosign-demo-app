@@ -213,7 +213,7 @@ def oauth_callback(request):
         oauth = hsclient.get_oauth_data(code, CLIENT_ID, SECRET, state)
         request.session['oauth'] = oauth
     except KeyError:
-        return render(request, 'hellosign/embedded_signing.html', {
+        return render(request, 'hellosign/oauth_callback.html', {
                 'error_message': "No code or state found",
             })
 
