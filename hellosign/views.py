@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from hellosign_python_sdk.hsclient import HSClient
+from hellosign_python_sdk.resource.signature_request import SignatureRequest
 from hellosign_python_sdk.utils.exception import NoAuthMethod, BadRequest
 from settings import API_KEY, CLIENT_ID, SECRET
 from .forms import UploadFileForm
@@ -156,6 +157,13 @@ def embedded_template_requesting(request):
 
 
 def oauth(request):
+    try:
+        oauth_accesstoken = request.session['access_token']
+        oauth_token_type = request.session['token_type']
+    except KeyError:
+        oauth_accesstoken = None
+        oauth_token_type = None
+
     if request.method == 'POST':
         try:
             user_email = request.POST['email']
@@ -166,35 +174,36 @@ def oauth(request):
             files = [os.path.dirname(os.path.realpath(__file__)) + "/docs/nda.pdf"]
             signers = [{"name": user_name, "email_address": user_email}]
             cc_email_addresses = []
-            sr = user_hsclient.send_signature_request_embedded(
-                "1", CLIENT_ID, files, [], "OAuth Demo - NDA",
+            sr = user_hsclient.send_signature_request(
+                "1", files, [], "OAuth Demo - NDA",
                 "The NDA we talked about", "Please sign this NDA and then we" +
                 " can discuss more. Let me know if you have any questions.",
                 "", signers, cc_email_addresses)
-            embedded = user_hsclient.get_embeded_object(sr.signatures[0]["signature_id"])
         except KeyError:
-            return render(request, 'hellosign/embedded_signing.html', {
+            return render(request, 'hellosign/oauth.html', {
                 'error_message': "Please enter both your name and email.",
+                'client_id': CLIENT_ID
             })
         except NoAuthMethod:
-            return render(request, 'hellosign/embedded_signing.html', {
+            return render(request, 'hellosign/oauth.html', {
                 'error_message': "Please update your settings to include a " +
                 "value for API_KEY.",
+                'client_id': CLIENT_ID
             })
         else:
-            # pdb.set_trace()
-            # return HttpResponseRedirect('embedded_signing?signed=true&sign_url=' + str(embedded.sign_url))
-            return render(request, 'hellosign/embedded_signing.html', {
-                    'client_id': CLIENT_ID,
-                    'sign_url': str(embedded.sign_url)
+            if isinstance(sr, SignatureRequest):
+                return render(request, 'hellosign/oauth.html', {
+                    'message': 'Request sent successfully.',
+                    'oauth_accesstoken': request.session['oauth_accesstoken'],
+                    'oauth_token_type': request.session['oauth_token_type'],
+                    'client_id': CLIENT_ID
+                    })
+            else:
+                return render(request, 'hellosign/oauth.html', {
+                    'error_message': 'Unknow error',
+                    'client_id': CLIENT_ID
                     })
     else:
-        try:
-            oauth_accesstoken = request.session['access_token']
-            oauth_token_type = request.session['token_type']
-        except KeyError:
-            oauth_accesstoken = None
-            oauth_token_type = None
         return render(request, 'hellosign/oauth.html', {
                 'oauth_accesstoken': oauth_accesstoken,
                 'oauth_token_type': oauth_token_type,
@@ -209,6 +218,8 @@ def oauth_callback(request):
         oauth = hsclient.get_oauth_data(code, CLIENT_ID, SECRET, state)
         request.session['oauth_accesstoken'] = oauth.access_token
         request.session['oauth_token_type'] = oauth.access_token_type
+        # pdb.set_trace()
+
     except KeyError:
         return render(request, 'hellosign/oauth_callback.html', {
                 'error_message': "No code or state found",

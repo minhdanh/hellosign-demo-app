@@ -104,6 +104,12 @@
               </ol>
             </div>
             <h2>Try It Out</h2>
+            {% if message %}
+            <div class="alert alert-dismissable alert-success">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+              {{ message }}
+            </div>
+            {% endif %}
             {% if error_message %}
             <div class="alert alert-dismissable alert-warning">
               <button type="button" class="close" data-dismiss="alert">×</button>
@@ -162,21 +168,6 @@
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="{% static 'bootstrap.min.js' %}"></script>
     <script src="{% static 'bootswatch.js' %}"></script>
-    <script src="{% static 'bootstrap.file-input.js' %}"></script>
-    {% if sign_url %}
-    <script type="text/javascript" src="//s3.amazonaws.com/cdn.hellofax.com/js/embedded.js"></script>
-    <script type="text/javascript">
-        function openSigningDialog() {
-            HelloSign.init("{{ client_id }}");
-            HelloSign.open({
-                url: "{{ sign_url|safe }}"
-            });
-        }
-        $( document ).ready(function() {
-          openSigningDialog();
-        });
-    </script>
-    {% endif %}
     <script type="text/javascript">
         $( document ).ready(function() {
           $('input[type=file]').bootstrapFileInput();
