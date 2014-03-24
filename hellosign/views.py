@@ -161,8 +161,7 @@ def oauth(request):
             user_email = request.POST['email']
             user_name = request.POST['name']
 
-            oauth = request.session['oauth']
-            user_hsclient = HSClient(api_accesstoken=oauth.access_token, api_accesstokentype=oauth.access_token_type)
+            user_hsclient = HSClient(api_accesstoken=request.session['oauth_accesstoken'], api_accesstokentype=request.session['oauth_token_type'])
 
             files = [os.path.dirname(os.path.realpath(__file__)) + "/docs/nda.pdf"]
             signers = [{"name": user_name, "email_address": user_email}]
@@ -191,11 +190,14 @@ def oauth(request):
                     })
     else:
         try:
-            oauth = request.session['oauth']
+            oauth_accesstoken = request.session['access_token']
+            oauth_token_type = request.session['token_type']
         except KeyError:
-            oauth = request.session['oauth'] = None
+            oauth_accesstoken = None
+            oauth_token_type = None
         return render(request, 'hellosign/oauth.html', {
-                'oauth': oauth,
+                'oauth_accesstoken': oauth_accesstoken,
+                'oauth_token_type': oauth_token_type,
                 'client_id': CLIENT_ID
             })
 
@@ -205,7 +207,8 @@ def oauth_callback(request):
         state = request.GET['state']
         hsclient = HSClient(api_key=API_KEY)
         oauth = hsclient.get_oauth_data(code, CLIENT_ID, SECRET, state)
-        request.session['oauth'] = oauth
+        request.session['oauth_accesstoken'] = oauth.access_token
+        request.session['oauth_token_type'] = oauth.token_type
     except KeyError:
         return render(request, 'hellosign/oauth_callback.html', {
                 'error_message': "No code or state found",

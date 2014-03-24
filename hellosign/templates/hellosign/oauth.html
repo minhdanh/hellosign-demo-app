@@ -110,11 +110,12 @@
               {{ error_message }}
             </div>
             {% endif %}
-            {% if not oauth %}
+            {% if not oauth_accesstoken and not oauth_token_type %}
             <div class="alert alert-dismissable alert-warning">
               <button type="button" class="close" data-dismiss="alert">×</button>
               Not currently authorized.
             </div>
+            {% endif %}
             <p>This demo will prompt you for authorization to send a signature request to someone on your behalf. Enter their email address and an optional name below and click "Launch Demo."</p>
             <div class="col-lg-8">
               <form class="form-horizontal" action="{% url 'oauth' %}" method="post">
@@ -135,7 +136,6 @@
               </div>
               </form>
             </div>
-            {% endif %}
           </div>
         </div>
         <footer>
