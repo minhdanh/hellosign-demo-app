@@ -210,6 +210,7 @@ def oauth_callback(request):
     try:
         code = request.GET['code']
         state = request.GET['state']
+        hsclient = HSClient(api_key=API_KEY)
         oauth = hsclient.get_oauth_data(code, CLIENT_ID, SECRET, state)
         request.session['oauth'] = oauth
     except KeyError:

@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^embedded_signing', views.embedded_signing, name='embedded_signing'),
     url(r'^embedded_requesting', views.embedded_requesting, name='embedded_requesting'),
     url(r'^embedded_template_requesting', views.embedded_template_requesting, name='embedded_template_requesting'),
-    url(r'^oauth', views.oauth, name='oauth'),
+    url(r'^oauth$', views.oauth, name='oauth'),
     url(r'^oauth_callback', views.oauth_callback, name='oauth_callback'),
 
 )
