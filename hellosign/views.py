@@ -1,9 +1,9 @@
 from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
-from hellosign_python_sdk.hsclient import HSClient
-from hellosign_python_sdk.resource.signature_request import SignatureRequest
-from hellosign_python_sdk.utils.exception import NoAuthMethod, BadRequest
+from hellosign.hsclient import HSClient
+from hellosign.resource.signature_request import SignatureRequest
+from hellosign.utils.exception import NoAuthMethod, BadRequest
 from settings import API_KEY, CLIENT_ID, SECRET
 from .forms import UploadFileForm
 import os
