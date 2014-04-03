@@ -1,24 +1,21 @@
 from django.shortcuts import render_to_response, render
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponse
 from hellosign.hsclient import HSClient
 from hellosign.resource.signature_request import SignatureRequest
 from hellosign.utils.exception import NoAuthMethod, BadRequest
 from settings import API_KEY, CLIENT_ID, SECRET
 from .forms import UploadFileForm
 import os
-import pdb
 import tempfile
 import shutil
 import json
-import re
 from querystring_parser import parser
-import sys
 
 
 def index(request):
     return render_to_response('hellosign/index.html',
         context_instance=RequestContext(request))
+
 
 def embedded_signing(request):
     if request.method == 'POST':
@@ -46,8 +43,6 @@ def embedded_signing(request):
                 "value for API_KEY.",
             })
         else:
-            # pdb.set_trace()
-            # return HttpResponseRedirect('embedded_signing?signed=true&sign_url=' + str(embedded.sign_url))
             return render(request, 'hellosign/embedded_signing.html', {
                     'client_id': CLIENT_ID,
                     'sign_url': str(embedded.sign_url)
@@ -55,6 +50,7 @@ def embedded_signing(request):
     else:
         return render_to_response('hellosign/embedded_signing.html',
             context_instance=RequestContext(request))
+
 
 def embedded_requesting(request):
     if request.method == 'POST':
@@ -100,6 +96,7 @@ def embedded_requesting(request):
     else:
         return render_to_response('hellosign/embedded_requesting.html',
             context_instance=RequestContext(request))
+
 
 def embedded_template_requesting(request):
     try:
@@ -209,6 +206,7 @@ def oauth(request):
                 'oauth_token_type': oauth_token_type,
                 'client_id': CLIENT_ID
             })
+
 
 def oauth_callback(request):
     try:
