@@ -1,19 +1,15 @@
 from django.shortcuts import render_to_response, render
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponse
 from hellosign_sdk.hsclient import HSClient
 from hellosign_sdk.resource.signature_request import SignatureRequest
 from hellosign_sdk.utils.exception import NoAuthMethod, BadRequest
 from settings import API_KEY, CLIENT_ID, SECRET
 from .forms import UploadFileForm
 import os
-import pdb
 import tempfile
 import shutil
 import json
-import re
 from querystring_parser import parser
-import sys
 
 
 def index(request):
@@ -46,8 +42,6 @@ def embedded_signing(request):
                 "value for API_KEY.",
             })
         else:
-            # pdb.set_trace()
-            # return HttpResponseRedirect('embedded_signing?signed=true&sign_url=' + str(embedded.sign_url))
             return render(request, 'hellosign/embedded_signing.html', {
                     'client_id': CLIENT_ID,
                     'sign_url': str(embedded.sign_url)
@@ -71,10 +65,8 @@ def embedded_requesting(request):
             form = UploadFileForm(request.POST, request.FILES)
             if form.is_valid():
                 files.append(handle_uploaded_file(request.FILES['upload_file']))
-            # files = [file_name]
             signers = [{"name": signer_name, "email_address": signer_email}]
             cc_email_addresses = []
-            # pdb.set_trace()
 
             sr = hsclient.create_unclaimed_draft(
                 "1", CLIENT_ID, '1', user_email, files, [], "request_signature",
