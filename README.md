@@ -5,9 +5,11 @@ A demo app wrriten in Python for hellosign_python_sdk
 
 ### How to use
 
-#### 1. Install django
+#### 1. Clone the source and install django
 
 ````bash
+git clone git@github.com:minhdanh/hellosign-demo-app.git
+cd hellosign-demo-app
 pip install django=1.6
 ````
 
