@@ -29,7 +29,7 @@ python manage.py runserver
 Or just push the code to Heroku and you're all set!
 
 
-Notice that in order for the app to run correctly, you need to register your HelloSign app with a valid callback url. If you want to deploy the app on localhost, you may want to use ngrok (https://ngrok.com) because `localhost` or `127.0.0.1` is not allowed as valid callback urls by HelloSign. Here's how:
+Notice that in order for the app to run correctly, you need to register your HelloSign app with a valid callback url. If you want to deploy the app on localhost, you may want to use ngrok (https://ngrok.com) because `localhost` or `127.0.0.1` is not recognized as valid callback urls by HelloSign. Here's how:
 
 1. Download ngrok (https://ngrok.com/download) and extract the zip file you've just downloaded
 
